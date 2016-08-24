@@ -24,8 +24,8 @@ class CLight
 	int arg1;
 	int arg2;
 	
-	volatile uint8_t* m_port;
-	volatile uint8_t* m_ddr_port;
+	volatile uint8_t *m_port;
+	volatile uint8_t *m_ddr_port;
 	uint8_t m_pin;
 };
 

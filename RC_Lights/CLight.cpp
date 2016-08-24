@@ -1,10 +1,13 @@
 #include <avr/io.h>
 #include "CLight.h"
+#include "RC_Const.h"
 
 CLight::CLight(volatile uint8_t* port, uint8_t pin, unsigned int blinkTime, bool initiallyOn)
 {
 	m_port = port;
-	*m_ddr_port = _BV(pin);
+	m_ddr_port = port - 1;
+//	*m_ddr_port = _BV(pin);
+	*m_ddr_port |= (1<<pin);
 	m_pin = pin;
 	
 	m_blinkTime = blinkTime;
@@ -19,12 +22,12 @@ void CLight::SetLightOnOff(bool state)
 	
 	if (m_lightOn)
 	{
-		*m_port |= _BV(m_pin);
+		*m_port |= (1<<m_pin);
 		m_lightOnStrength=true;
 	}
 	else
 	{
-		*m_port &= _BV(m_pin);
+		*m_port &= ~(1<<m_pin);
 	}
 }
 
@@ -49,11 +52,7 @@ void CLight::Blink(unsigned int timeInMs)
 	*/
 		if (timeInMs < m_blinkStartTime)
 		{
-			tempTime=timeInMs-m_blinkStartTime+60000;
-		}
-		else if (timeInMs == m_blinkStartTime)
-		{
-			tempTime=m_blinkStartTime;
+			tempTime=timeInMs-m_blinkStartTime+fullTime;
 		}
 		else
 		{
@@ -61,7 +60,7 @@ void CLight::Blink(unsigned int timeInMs)
 		}
 		
 	//	Toggle LED if the triggered
-		if (!((tempTime)%(m_blinkTime/2)))
+		if (!((tempTime)-(m_blinkTime/2)*((tempTime)/(m_blinkTime/2))))
 		{
 			if (!m_blinkSet)
 			{
@@ -81,11 +80,11 @@ void CLight::Blink(unsigned int timeInMs)
 	// PWM part - for LED strength
 	if (m_lightOn)
 	{
-		if ((50-((m_lightStrengthStartTime-timeInMs)%50)) < ((uint8_t)(50*m_lightStrength/100)))
+		if ((20-((m_lightStrengthStartTime-timeInMs)-20*((m_lightStrengthStartTime-timeInMs)/20))) < ((uint8_t)(20*m_lightStrength/100)))
 		{
 			if (m_lightOnStrength == false)
 			{
-				*m_port |= _BV(m_pin);
+				*m_port |= (1<<m_pin);
 			}
 			m_lightOnStrength=true;
 		}
@@ -93,7 +92,7 @@ void CLight::Blink(unsigned int timeInMs)
 		{
 			if (m_lightOnStrength == true)
 			{
-				*m_port &= _BV(m_pin);
+				*m_port &= ~(1<<m_pin);
 			}
 			m_lightOnStrength=false;
 		}

@@ -8,10 +8,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "CLight.h"
-
-
-// Time variables
-volatile unsigned int milisec=0;
+#include "CRemote.h"
+#include "RC_Const.h"
 
 int main(void)
 {
@@ -23,15 +21,15 @@ int main(void)
 	//	TIMSK |= (1<<OCIE0A);
 	sei();
 #endif
-/*	CLight frontL(&PORTA, PA0, 0);
+	CLight frontL(&PORTA, PA0, 0);
 	CLight frontR(&PORTA, PA1, 0);
 	CLight rearL(&PORTA, PA2, 0);
 	CLight rearR(&PORTA, PA3, 0);
 	CLight blinkL(&PORTA, PA4, 1000);
 	CLight blinkR(&PORTA, PA5, 1000);
-*/	CLight rotatL(&PORTA, PA6, 500, true);
+	CLight rotatL(&PORTA, PA6, 5, true);
 	rotatL.SetLightStrength(milisec, (int8_t)20);
-	CLight rotatR(&PORTA, PA7, 500, false);
+	CLight rotatR(&PORTA, PA7, 5, false);
 	rotatR.SetLightStrength(milisec, (int8_t)95);
 /*		
 #if defined(DEBUG)
@@ -57,9 +55,9 @@ int main(void)
 		rotatR.Blink(milisec);
 
 #if defined(DEBUG)
-		if (milisec >= 60000)
+		if (milisec > fullTime-1)
 		{
-			milisec-=60000;
+			milisec-=fullTime;
 		}
 #endif
     }
@@ -70,9 +68,9 @@ ISR (TIMER0_COMPA_vect)
 {
 	milisec++;
 	// unsigned int has max 65536; limiting to 1 min
-	if (milisec >= 60000)
+	if (milisec > fullTime-1)
 	{
-		milisec-=60000;
+		milisec-=fullTime;
 	}
 
 }
