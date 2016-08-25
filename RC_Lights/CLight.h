@@ -6,12 +6,12 @@ class CLight
 	public:
 	CLight(volatile uint8_t* port, uint8_t pin, unsigned int blinkTime=0, bool initiallyOn=true);
 	
-	bool GetLightOn() { return m_lightOn; }
+	bool GetLightOn();
 	void SetLightOnOff(bool state);
-	void SetBlinkStartTime(unsigned int timeInMs) { m_blinkStartTime = timeInMs; }
+	void SetBlinkStartTime(unsigned int timeInMs);
 	void SetLightStrength(unsigned int timeInMs, int8_t strengthInPercent);
 	void Blink(unsigned int timeInMs);
-	bool ToggleState();
+	bool ToggleState(); // returns the new state
 	
 	private:
 	bool m_lightOn;

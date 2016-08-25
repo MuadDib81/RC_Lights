@@ -16,6 +16,11 @@ CLight::CLight(volatile uint8_t* port, uint8_t pin, unsigned int blinkTime, bool
 	SetBlinkStartTime((unsigned int)0);
 }
 
+bool CLight::GetLightOn()
+{
+	return m_lightOn;
+}
+
 void CLight::SetLightOnOff(bool state)
 {
 	m_lightOn = state;
@@ -29,6 +34,11 @@ void CLight::SetLightOnOff(bool state)
 	{
 		*m_port &= ~(1<<m_pin);
 	}
+}
+
+void CLight::SetBlinkStartTime(unsigned int timeInMs)
+{
+	m_blinkStartTime = timeInMs;
 }
 
 void CLight::SetLightStrength(unsigned int timeInMs, int8_t strengthInPercent)

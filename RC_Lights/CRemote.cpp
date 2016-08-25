@@ -15,7 +15,7 @@ CRemote::CRemote(volatile uint8_t* port, uint8_t pin)
 	m_pin = pin;
 }
 
-unsigned int CRemote::getHighTimePercentage()
+void CRemote::setHighTimePercentage()
 {
 	unsigned int diffStartMid;
 	unsigned int diffMidStop;
@@ -40,25 +40,27 @@ unsigned int CRemote::getHighTimePercentage()
 	
 	if (diffMidStop==diffStartMid)
 	{
-		return 0;
+		highTimePercentage=0;
 	}
 	else
 	{
-		return (unsigned int)(100*diffStartMid/(diffStartMid+diffMidStop));
+		highTimePercentage=(unsigned int)(100*diffStartMid/(diffStartMid+diffMidStop));
 	}
 }
 
 void CRemote::setStartTime(unsigned int TimeInMs)
 {
-	
+	startTime=TimeInMs;
 }
 
 void CRemote::setMidTime(unsigned int TimeInMs)
 {
-	
+	midTime=TimeInMs;
 }
 
 void CRemote::setStopTime(unsigned int TimeInMs)
 {
-	
+	stopTime=TimeInMs;
+	highTimePercentage=getHighTimePercentage();
+	setStartTime(TimeInMs);
 }
